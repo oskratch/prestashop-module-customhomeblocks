@@ -246,7 +246,7 @@ class Customhomeblocks extends Module
         $html .= '<input type="hidden" name="customhomeblocks_save" value="1">';
         $html .= '<input type="hidden" name="block_id" value="' . htmlspecialchars($block['id'], ENT_QUOTES, 'UTF-8') . '">';
 
-        $html .= '<div class="form-group" style="margin-bottom:20px">';
+        $html .= '<div class="form-group" style="margin-bottom:20px;overflow:hidden">';
         $html .= '<label class="control-label col-lg-3 required">' . $this->l('Block Title (internal label)') . '</label>';
         $html .= '<div class="col-lg-9">';
         $html .= '<input type="text" name="block_title" class="form-control" required';
