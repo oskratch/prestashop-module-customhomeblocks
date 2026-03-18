@@ -23,6 +23,7 @@ class Customhomeblocks extends Module
         $this->author        = 'Oscar Periche';
         $this->need_instance = 0;
         $this->bootstrap     = true;
+        $this->allow_push    = true;
 
         parent::__construct();
 
@@ -57,30 +58,48 @@ class Customhomeblocks extends Module
 
     private function getBlocks(): array
     {
-        $blocks = json_decode(Configuration::get(self::CONFIG_KEY), true);
+        $raw    = Configuration::get(self::CONFIG_KEY);
+        $blocks = json_decode(base64_decode((string) $raw), true);
 
         return is_array($blocks) ? $blocks : [];
     }
 
     private function saveBlocks(array $blocks): void
     {
-        Configuration::updateValue(self::CONFIG_KEY, json_encode(array_values($blocks)), true);
+        Configuration::updateValue(self::CONFIG_KEY, base64_encode(json_encode(array_values($blocks))));
     }
 
     /* ------------------------------------------------------------------ */
     /*  Back-office configuration                                            */
     /* ------------------------------------------------------------------ */
 
+    private function getConfigureBaseUrl(bool $withToken = true): string
+    {
+        $scriptPath = explode('?', $_SERVER['REQUEST_URI'])[0];
+        $protocol   = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+
+        $url = $protocol . '://' . $_SERVER['HTTP_HOST']
+            . $scriptPath
+            . '?controller=AdminModules'
+            . '&configure=' . $this->name;
+
+        if ($withToken) {
+            $url .= '&token=' . Tools::getAdminTokenLite('AdminModules');
+        }
+
+        return $url;
+    }
+
     public function getContent()
     {
         $output = '';
         $action = Tools::getValue('action', 'list');
 
-        // Save block (add or edit)
-        if (Tools::isSubmit('submitBlock')) {
-            $blockId = Tools::getValue('block_id');
-            $title   = Tools::getValue('block_title');
-            $html    = Tools::getValue('block_html');
+        // POST: save block — use hidden field to detect submission reliably in PS9
+        if (isset($_POST['customhomeblocks_save'])) {
+            $blockId = trim($_POST['block_id'] ?? '');
+            $title   = strip_tags(trim($_POST['block_title'] ?? ''));
+            $html    = $_POST['block_html'] ?? '';
             $blocks  = $this->getBlocks();
 
             if ($blockId) {
@@ -105,7 +124,7 @@ class Customhomeblocks extends Module
             $action = 'list';
         }
 
-        // Delete block
+        // GET: delete
         if ($action === 'delete') {
             $blockId = Tools::getValue('block_id');
             $blocks  = array_filter($this->getBlocks(), fn($b) => $b['id'] !== $blockId);
@@ -114,7 +133,7 @@ class Customhomeblocks extends Module
             $action = 'list';
         }
 
-        // Move block up or down
+        // GET: move up/down
         if ($action === 'move') {
             $blockId   = Tools::getValue('block_id');
             $direction = Tools::getValue('direction');
@@ -144,9 +163,7 @@ class Customhomeblocks extends Module
     protected function renderBlockList(): string
     {
         $blocks  = $this->getBlocks();
-        $baseUrl = AdminController::$currentIndex
-            . '&configure=' . $this->name
-            . '&token=' . Tools::getAdminTokenLite('AdminModules');
+        $baseUrl = $this->getConfigureBaseUrl();
 
         $html  = '<div class="panel">';
         $html .= '<div class="panel-heading"><i class="icon-list"></i> ' . $this->l('Content Blocks') . '</div>';
@@ -218,62 +235,42 @@ class Customhomeblocks extends Module
             }
         }
 
-        $cancelUrl = AdminController::$currentIndex
-            . '&configure=' . $this->name
-            . '&token=' . Tools::getAdminTokenLite('AdminModules');
+        $formAction = $this->getConfigureBaseUrl();
+        $cancelUrl  = $this->getConfigureBaseUrl();
+        $legend     = $action === 'edit' ? $this->l('Edit Block') : $this->l('Add Block');
 
-        $fieldsForm = [[
-            'form' => [
-                'legend' => [
-                    'title' => $action === 'edit' ? $this->l('Edit Block') : $this->l('Add Block'),
-                    'icon'  => 'icon-pencil',
-                ],
-                'input' => [
-                    [
-                        'type' => 'hidden',
-                        'name' => 'block_id',
-                    ],
-                    [
-                        'type'     => 'text',
-                        'label'    => $this->l('Block Title (internal label)'),
-                        'name'     => 'block_title',
-                        'size'     => 60,
-                        'required' => true,
-                    ],
-                    [
-                        'type'         => 'textarea',
-                        'label'        => $this->l('Custom HTML Content'),
-                        'name'         => 'block_html',
-                        'cols'         => 60,
-                        'rows'         => 15,
-                        'autoload_rte' => true,
-                    ],
-                ],
-                'submit'  => ['title' => $this->l('Save')],
-                'buttons' => [[
-                    'href'  => $cancelUrl,
-                    'title' => $this->l('Cancel'),
-                    'icon'  => 'process-icon-cancel',
-                ]],
-            ],
-        ]];
+        $html  = '<form action="' . $formAction . '" method="post">';
+        $html .= '<div class="panel">';
+        $html .= '<div class="panel-heading"><i class="icon-pencil"></i> ' . $legend . '</div>';
+        $html .= '<div class="panel-body">';
+        $html .= '<input type="hidden" name="customhomeblocks_save" value="1">';
+        $html .= '<input type="hidden" name="block_id" value="' . htmlspecialchars($block['id'], ENT_QUOTES, 'UTF-8') . '">';
 
-        $helper                        = new HelperForm();
-        $helper->show_toolbar          = false;
-        $helper->module                = $this;
-        $helper->default_form_language = $this->context->language->id;
-        $helper->submit_action         = 'submitBlock';
-        $helper->currentIndex          = AdminController::$currentIndex . '&configure=' . $this->name;
-        $helper->token                 = Tools::getAdminTokenLite('AdminModules');
-        $helper->tpl_vars              = [
-            'fields_value' => [
-                'block_id'    => $block['id'],
-                'block_title' => $block['title'],
-                'block_html'  => $block['html'],
-            ],
-        ];
+        $html .= '<div class="form-group" style="margin-bottom:20px">';
+        $html .= '<label class="control-label col-lg-3 required">' . $this->l('Block Title (internal label)') . '</label>';
+        $html .= '<div class="col-lg-9">';
+        $html .= '<input type="text" name="block_title" class="form-control" required';
+        $html .= ' value="' . htmlspecialchars($block['title'], ENT_QUOTES, 'UTF-8') . '">';
+        $html .= '</div></div>';
 
-        return $helper->generateForm($fieldsForm);
+        $html .= '<div class="form-group" style="margin-top:20px">';
+        $html .= '<label class="control-label col-lg-3">' . $this->l('Custom HTML Content') . '</label>';
+        $html .= '<div class="col-lg-9">';
+        $html .= '<textarea name="block_html" rows="20" style="width:100%;font-family:monospace;font-size:13px">';
+        $html .= htmlspecialchars($block['html'], ENT_QUOTES, 'UTF-8');
+        $html .= '</textarea>';
+        $html .= '<p class="help-block">' . $this->l('Enter raw HTML. Tags are preserved as-is.') . '</p>';
+        $html .= '</div></div>';
+
+        $html .= '</div>';
+        $html .= '<div class="panel-footer">';
+        $html .= '<button type="submit" class="btn btn-primary"><i class="process-icon-save"></i> ' . $this->l('Save') . '</button> ';
+        $html .= '<a href="' . $cancelUrl . '" class="btn btn-default"><i class="process-icon-cancel"></i> ' . $this->l('Cancel') . '</a>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</form>';
+
+        return $html;
     }
 
     /* ------------------------------------------------------------------ */

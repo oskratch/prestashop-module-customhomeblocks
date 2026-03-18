@@ -12,11 +12,13 @@
 
     <author>Oscar Periche</author>
 
+    <allow_push>1</allow_push>
+
     <ps_versions_compliancy>
 
         <min>1.7</min>
 
-        <max>9.0</max>
+        <max>_PS_VERSION_</max>
 
     </ps_versions_compliancy>
 

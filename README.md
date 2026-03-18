@@ -1,7 +1,7 @@
 # Custom Home Blocks
 
 **Version:** 1.0.0  
-**Compatible with PrestaShop:** 1.7.x – 9.x
+**Compatible with PrestaShop:** 9.x (tested on PS9)
 
 ## Description
 
@@ -9,26 +9,29 @@ This module allows you to add multiple custom HTML content blocks to the homepag
 
 ## Features
 
-- Supports multiple hook placements (`allow_push = true`)
-- Each instance stores its own title and HTML content, keyed by module ID
-- Back office form with TinyMCE rich-text editor support
+- Supports multiple hook placements (`allow_push = true`) — add as many blocks as you need from **Design > Positions**
+- Each instance stores its own title and HTML content
+- Back office form with a plain monospace HTML editor (no WYSIWYG — tags are preserved as-is)
 - Smarty template output wrapped in a Bootstrap-compatible `div.custom-home-block`
-- No database tables — uses PrestaShop `Configuration` API
+- No database tables — uses PrestaShop `Configuration` API with base64-safe storage
 
 ## Installation
 
 1. Upload the `customhomeblocks/` folder to your PrestaShop `/modules/` directory.
 2. Go to **Modules > Module Manager** and install **Custom Home Blocks**.
-3. Go to **Design > Positions** and drag the module into the `displayHome` hook.
+3. Go to **Design > Positions**, click **Attach a module**, select **Custom Home Blocks** and attach it to the `displayHome` hook.
 
 ## Configuration
 
-After installation, go to **Modules > Module Manager**, find "Custom Home Blocks" and click **Configure**. Fill in:
+After installation, go to **Modules > Module Manager**, find "Custom Home Blocks" and click **Configure**. Then:
 
-- **Block Title** — an internal label to identify the block in the back office.
-- **Custom HTML Content** — the HTML to display on the homepage (TinyMCE editor loaded automatically).
+1. Click **Add block** to create a new content block.
+2. Fill in:
+   - **Block Title** — an internal label to identify the block in the back office.
+   - **Custom HTML Content** — paste your raw HTML directly. Tags are preserved exactly as written.
+3. Click **Save**.
 
-To display multiple blocks with different content, drag the module multiple times into the `displayHome` hook from **Design > Positions**.
+To display multiple independent blocks, go to **Design > Positions** and attach the module again to `displayHome` as many times as needed. Each attachment is a separate, independently configurable instance.
 
 ## Module Structure
 
