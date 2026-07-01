@@ -1,37 +1,44 @@
 # Custom Home Blocks
 
-**Version:** 1.0.0  
-**Compatible with PrestaShop:** 9.x (tested on PS9)
+![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
+![PrestaShop: 1.7+](https://img.shields.io/badge/PrestaShop-1.7%2B-informational)
+![Version](https://img.shields.io/badge/version-1.0.2-green)
 
-## Description
-
-This module allows you to add multiple custom HTML content blocks to the homepage via the `displayHome` hook. Each module instance can display its own independent HTML content, configurable directly from the back office — no database tables required.
+A PrestaShop module to add custom HTML content blocks to the homepage via the `displayHome` hook. Blocks are managed from the back office — no database tables required.
 
 ## Features
 
-- Supports multiple hook placements (`allow_push = true`) — add as many blocks as you need from **Design > Positions**
-- Each instance stores its own title and HTML content
-- Back office form with a plain monospace HTML editor (no WYSIWYG — tags are preserved as-is)
-- Smarty template output wrapped in a Bootstrap-compatible `div.custom-home-block`
-- No database tables — uses PrestaShop `Configuration` API with base64-safe storage
+- Add, edit, delete and reorder multiple HTML blocks from the back office
+- Enable/disable individual blocks without deleting them
+- Content preview in the block list so you can identify blocks at a glance
+- Plain monospace HTML editor — all tags, attributes and inline styles are preserved exactly as written, no WYSIWYG
+- No extra database tables — stored via the PrestaShop `Configuration` API
+- Can be attached to multiple hook positions (e.g. both top and bottom of `displayHome`)
+
+## Requirements
+
+- PrestaShop 1.7 or later (tested on PS 9)
+- PHP 7.1 or later
 
 ## Installation
 
-1. Upload the `customhomeblocks/` folder to your PrestaShop `/modules/` directory.
+1. Copy the `customhomeblocks/` folder into your PrestaShop `/modules/` directory.
 2. Go to **Modules > Module Manager** and install **Custom Home Blocks**.
 3. Go to **Design > Positions**, click **Attach a module**, select **Custom Home Blocks** and attach it to the `displayHome` hook.
 
 ## Configuration
 
-After installation, go to **Modules > Module Manager**, find "Custom Home Blocks" and click **Configure**. Then:
+Go to **Modules > Module Manager**, find "Custom Home Blocks" and click **Configure**. From there:
 
 1. Click **Add block** to create a new content block.
 2. Fill in:
-   - **Block Title** — an internal label to identify the block in the back office.
-   - **Custom HTML Content** — paste your raw HTML directly. Tags are preserved exactly as written.
+   - **Block title** — an internal label to identify the block in the back office. Not shown on the front office.
+   - **HTML content** — paste your raw HTML. All tags, attributes and inline styles are preserved exactly as written.
 3. Click **Save**.
 
-To display multiple independent blocks, go to **Design > Positions** and attach the module again to `displayHome` as many times as needed. Each attachment is a separate, independently configurable instance.
+All active blocks are rendered in order at the hook position. Use the up/down arrows to reorder them, and the **Active/Disabled** toggle to show or hide individual blocks without deleting them.
+
+To display the blocks in multiple positions (e.g. top and bottom of the homepage), go to **Design > Positions** and attach the module again to a different hook position. Both instances will render the same set of blocks.
 
 ## Module Structure
 
@@ -47,8 +54,8 @@ customhomeblocks/
 
 ## Support
 
-If you need help or have questions about this module, you can contact `info@metalinked.net`.
+Open an issue on GitHub or contact `info@metalinked.net`.
 
 ## License
 
-This module is licensed under the GPLv2 or later. See [LICENSE](LICENSE) for details.
+This module is licensed under the [GNU General Public License v2 or later](LICENSE).
