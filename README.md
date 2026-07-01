@@ -2,7 +2,7 @@
 
 ![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
 ![PrestaShop: 1.7+](https://img.shields.io/badge/PrestaShop-1.7%2B-informational)
-![Version](https://img.shields.io/badge/version-1.0.2-green)
+![Version](https://img.shields.io/github/v/release/oskratch/prestashop-module-customhomeblocks)
 
 A PrestaShop module to add custom HTML content blocks to the homepage via the `displayHome` hook. Blocks are managed from the back office, no database tables required.
 
