@@ -1,5 +1,3 @@
 {
-  "customhomeblocks/customhomeblocks.php": {
-    "release-type": "php"
-  }
+  "customhomeblocks": "1.0.2"
 }

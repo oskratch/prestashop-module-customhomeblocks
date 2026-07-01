@@ -1,0 +1,13 @@
+{
+    "name": "oskratch/prestashop-module-customhomeblocks",
+    "description": "Add custom HTML content blocks to the homepage via the displayHome hook",
+    "type": "prestashop-module",
+    "version": "1.0.2",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Oscar Periche",
+            "email": "info@metalinked.net"
+        }
+    ]
+}

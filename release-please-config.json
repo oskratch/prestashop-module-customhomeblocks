@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    "customhomeblocks": {
+      "release-type": "php",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "customhomeblocks/customhomeblocks.php"
+        },
+        {
+          "type": "generic",
+          "path": "customhomeblocks/config.xml"
+        }
+      ]
+    }
+  }
+}
