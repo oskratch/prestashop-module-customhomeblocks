@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/oskratch/prestashop-module-customhomeblocks/compare/v1.0.3...v1.0.4) (2026-07-01)
+
+
+### Miscellaneous Chores
+
+* fix release-please package path and sync all versions to 1.0.3 ([4b9036a](https://github.com/oskratch/prestashop-module-customhomeblocks/commit/4b9036acc78b46e4a9f0c1567f9f1a013bee0f1b))
+
 ## [1.0.2](https://github.com/oskratch/prestashop-module-customhomeblocks/compare/v1.0.1...v1.0.2) (2026-03-18)
 
 
