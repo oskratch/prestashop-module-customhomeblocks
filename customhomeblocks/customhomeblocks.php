@@ -21,7 +21,7 @@ class Customhomeblocks extends Module
     {
         $this->name          = 'customhomeblocks';
         $this->tab           = 'front_office_features';
-        $this->version       = '1.0.4'; // x-release-please-version
+        $this->version       = '1.0.4';
         $this->author        = 'Oscar Periche';
         $this->need_instance = 0;
         $this->bootstrap     = true;

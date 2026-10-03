@@ -8,7 +8,7 @@
 
     <description><![CDATA[Add multiple custom HTML content blocks to the homepage via the displayHome hook.]]></description>
 
-    <version>1.0.4</version> <!-- x-release-please-version -->
+    <version>1.0.4</version>
 
     <author>Oscar Periche</author>
 
